@@ -11,13 +11,15 @@ set(bpftrace_VERSION_PATCH 1)
 include(GNUInstallDirs)
 
 set(WARNINGS_AS_ERRORS OFF CACHE BOOL "Build with -Werror")
-set(STATIC_LINKING OFF CACHE BOOL "Build bpftrace as a statically linked executable")
-set(STATIC_LIBC OFF CACHE BOOL "Attempt to embed libc, only known to work with musl. Has issues with dlopen.")
+
+set(STATIC_LINKING ON CACHE BOOL "Build bpftrace as a statically linked executable")
+set(STATIC_LIBC ON CACHE BOOL "Attempt to embed libc, only known to work with musl. Has issues with dlopen.")
 set(USE_SYSTEM_BPF_BCC OFF CACHE BOOL "Use system libbpf and bcc instead of the repository vendored ones.")
+set(STATIC_BPF_BCC ON CACHE BOOL "")
 
 set(EMBED_USE_LLVM OFF CACHE BOOL "Use a prebuilt embedded LLVM, speeds up the build process")
 set(EMBED_BUILD_LLVM OFF CACHE BOOL "Build Clang&LLVM static libs as an ExternalProject and link to these instead of system libs.")
-set(EMBED_LLVM_VERSION "12" CACHE STRING "Embedded LLVM/Clang version to build and link against.")
+
 
 set(BUILD_ASAN OFF CACHE BOOL "Build bpftrace with -fsanitize=address")
 set(ENABLE_MAN ON CACHE BOOL "Build man pages")
@@ -28,7 +30,7 @@ set(BUILD_FUZZ OFF CACHE BOOL "Build bpftrace for fuzzing")
 set(USE_LIBFUZZER OFF CACHE BOOL "Use libfuzzer for fuzzing")
 set(FUZZ_TARGET "codegen" CACHE STRING "Fuzzing target")
 
-set(ENABLE_SKB_OUTPUT ON CACHE BOOL "Enable skb_output, will include libpcap")
+set(ENABLE_SKB_OUTPUT OFF CACHE BOOL "Enable skb_output, will include libpcap")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -71,6 +73,9 @@ add_compile_options("-Wcast-qual")
 add_compile_options("-Wunreachable-code")
 #add_compile_options("-Wformat=2")
 add_compile_options("-Wdisabled-optimization")
+add_compile_options("-fPIC")
+add_compile_options("-Wno-fpic")
+
 
 if (WARNINGS_AS_ERRORS)
   add_compile_options("-Werror")
@@ -141,6 +146,7 @@ add_flex_bison_dependency(flex_lexer bison_parser)
 add_library(parser ${BISON_bison_parser_OUTPUTS} ${FLEX_flex_lexer_OUTPUTS})
 target_compile_options(parser PRIVATE "-w")
 target_include_directories(parser PUBLIC src src/ast ${CMAKE_BINARY_DIR})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-unwind-tables -fno-asynchronous-unwind-tables")
 
 include(CheckSymbolExists)
 set(CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
@@ -151,9 +157,9 @@ find_package(LibBfd)
 find_package(LibOpcodes)
 find_package(LibDw)
 
-if(ENABLE_SKB_OUTPUT)
-find_package(LibPcap)
-endif()
+# if(ENABLE_SKB_OUTPUT)
+# find_package(LibPcap)
+# endif()
 
 if(POLICY CMP0075)
   cmake_policy(SET CMP0075 NEW)

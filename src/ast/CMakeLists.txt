@@ -17,6 +17,23 @@ add_library(ast
   passes/semantic_analyser.cpp
   passes/codegen_llvm.cpp
 )
+# Workaround to remove dynamic libs from static library dependencies
+function(unlink_transitive_dependency targets dep_to_remove)
+  foreach(tgt ${targets})
+    if(NOT TARGET ${tgt})
+      continue()
+    endif()
+
+    get_target_property(int_link_libs ${tgt} INTERFACE_LINK_LIBRARIES)
+
+    if(NOT(int_link_libs MATCHES "-NOTFOUND$"))
+      list(REMOVE_ITEM int_link_libs "${dep_to_remove}")
+      set_target_properties(${tgt} PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${int_link_libs}")
+    endif()
+  endforeach(tgt ${targets})
+endfunction(unlink_transitive_dependency)
+
 
 target_include_directories(ast_defs PUBLIC ${CMAKE_SOURCE_DIR}/src)
 target_include_directories(ast_defs PUBLIC ${CMAKE_SOURCE_DIR}/src/ast)
@@ -73,10 +90,15 @@ if (STATIC_LINKING)
     target_link_libraries(ast ${clang_libs})
     target_link_libraries(ast ${llvm_libs})
   endif()
-
+  # It's extremely unclear why the clang static libraries export link
+  # dependencies on the llvm and clang shared libraries. Regardless, we need
+  # this hack to remove them.
+  unlink_transitive_dependency("${CLANG_EXPORTED_TARGETS}" "LLVM")
+  unlink_transitive_dependency("${CLANG_EXPORTED_TARGETS}" "$<LINK_ONLY:clang-cpp>")
   if(STATIC_LIBC)
     unlink_transitive_dependency("${CLANG_EXPORTED_TARGETS}" "LLVM")
   endif()
+
 
 else()
   find_library(found_LLVM LLVM HINTS ${LLVM_LIBRARY_DIRS})
