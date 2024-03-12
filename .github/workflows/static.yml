@@ -1,6 +1,10 @@
 name: Static
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - develop
+      - master
 
 # Cancel previous run if a new one is started
 concurrency:
