@@ -15,7 +15,7 @@ jobs:
         env:
           - ARCH: arm64
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build static bpftrace
       run: ./.github/include/static.sh
     - uses: actions/upload-artifact@v3
