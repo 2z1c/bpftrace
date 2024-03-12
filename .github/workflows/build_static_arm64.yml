@@ -8,9 +8,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build_bpftrace_arm64_static:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env:
+          - ARCH: arm64
     steps:
     - uses: actions/checkout@v2
     - name: Build static bpftrace
       run: ./.github/include/static.sh
+    - uses: actions/upload-artifact@v3
+      with:
+        name: bpftrace-static-${{ matrix.env['ARCH'] }}
+        path: ./build-static/src/bpftrace
