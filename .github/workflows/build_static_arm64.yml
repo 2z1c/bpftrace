@@ -1,4 +1,4 @@
-name: Static
+name: Static_Arm64
 
 on: [push, pull_request]
 
