@@ -41,6 +41,8 @@ add_compile_options("-Wcast-qual")
 add_compile_options("-Wunreachable-code")
 #add_compile_options("-Wformat=2")
 add_compile_options("-Wdisabled-optimization")
+add_compile_options("-fPIC")
+
 
 if (WARNINGS_AS_ERRORS)
   add_compile_options("-Werror")
