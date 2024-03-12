@@ -11,9 +11,13 @@ IMAGE=bpftrace-static
 cd $(git rev-parse --show-toplevel)
 
 # Build the base image
-docker build -t "$IMAGE" -f docker/Dockerfile.arm64.static docker/
+docker buildx build --platform linux/arm64 -f docker/Dockerfile.arm64.static -t "$IMAGE" --load docker/
 
+# docker build -t "$IMAGE" -f docker/Dockerfile.arm64.static docker/
+# show image
+docker images
 # Perform bpftrace static build
+
 docker run -v $(pwd):$(pwd) -w $(pwd) -i "$IMAGE" <<'EOF'
 set -eux
 BUILD_DIR=build-static

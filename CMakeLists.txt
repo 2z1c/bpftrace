@@ -105,6 +105,7 @@ add_flex_bison_dependency(flex_lexer bison_parser)
 add_library(parser ${BISON_bison_parser_OUTPUTS} ${FLEX_flex_lexer_OUTPUTS})
 target_compile_options(parser PRIVATE "-w")
 target_include_directories(parser PUBLIC src src/ast ${CMAKE_BINARY_DIR})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-unwind-tables -fno-asynchronous-unwind-tables")
 
 include(CheckSymbolExists)
 set(CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
