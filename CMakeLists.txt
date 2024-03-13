@@ -22,7 +22,7 @@ set(BUILD_FUZZ OFF CACHE BOOL "Build bpftrace for fuzzing")
 set(USE_LIBFUZZER OFF CACHE BOOL "Use libfuzzer for fuzzing")
 set(FUZZ_TARGET "codegen" CACHE STRING "Fuzzing target")
 
-set(ENABLE_SKB_OUTPUT ON CACHE BOOL "Enable skb_output, will include libpcap")
+set(ENABLE_SKB_OUTPUT OFF CACHE BOOL "Enable skb_output, will include libpcap")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -42,6 +42,7 @@ add_compile_options("-Wunreachable-code")
 #add_compile_options("-Wformat=2")
 add_compile_options("-Wdisabled-optimization")
 add_compile_options("-fPIC")
+add_compile_options("-Wno-fpic")
 
 
 if (WARNINGS_AS_ERRORS)
@@ -118,9 +119,9 @@ find_package(LibBfd)
 find_package(LibOpcodes)
 find_package(LibDw)
 
-if(ENABLE_SKB_OUTPUT)
-find_package(LibPcap)
-endif()
+# if(ENABLE_SKB_OUTPUT)
+# find_package(LibPcap)
+# endif()
 
 if(POLICY CMP0075)
   cmake_policy(SET CMP0075 NEW)
