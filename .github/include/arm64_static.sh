@@ -36,3 +36,5 @@ if ! diff <(echo -e "$EXPECTED") <(echo "$GOT"); then
   exit 1
 fi
 EOF
+
+file $(pwd)/build-static/src/bpftrace
