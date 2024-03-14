@@ -11,7 +11,7 @@ set(bpftrace_VERSION_PATCH 0)
 include(GNUInstallDirs)
 
 set(WARNINGS_AS_ERRORS OFF CACHE BOOL "Build with -Werror")
-set(STATIC_LINKING OFF CACHE BOOL "Build bpftrace as a statically linked executable")
+set(STATIC_LINKING ON CACHE BOOL "Build bpftrace as a statically linked executable")
 
 set(BUILD_ASAN OFF CACHE BOOL "Build bpftrace with -fsanitize=address")
 set(ENABLE_MAN ON CACHE BOOL "Build man pages")
