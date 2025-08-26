@@ -134,7 +134,7 @@ target_compile_definitions(libbpftrace PRIVATE ${BPFTRACE_FLAGS})
 
 # Linking
 if(STATIC_LINKING)
-  target_link_options(${BPFTRACE} BEFORE PRIVATE "-static-libgcc" "-static-libstdc++")
+  target_link_options(${BPFTRACE} BEFORE PRIVATE "--static" "-static-libgcc" "-static-libstdc++")
 endif(STATIC_LINKING)
 
 

@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # 1. 下载源码（以 libpcap 为例）
-wget https://www.tcpdump.org/release/libpcap-1.10.4.tar.gz
-tar -xzf libpcap-1.10.4.tar.gz
-cd libpcap-1.10.4
+# wget https://www.tcpdump.org/release/libpcap-1.10.4.tar.gz
+# tar -xzf libpcap-1.10.4.tar.gz
+# cd libpcap-1.10.4
 
-# 2. 配置时强制启用 -fPIC
-export CFLAGS="-fPIC -O2"  # 必须使用 -fPIC 而非 -fpic
-./configure --prefix=/usr --enable-shared=no  # 静态库需保留 PIC
+# # 2. 配置时强制启用 -fPIC
+# export CFLAGS="-fPIC -O2"  # 必须使用 -fPIC 而非 -fpic
+# ./configure --prefix=/usr --enable-shared=no  # 静态库需保留 PIC
 
-# 3. 编译并替换原有库
-make && sudo make install
+# # 3. 编译并替换原有库
+# make && sudo make install
 
